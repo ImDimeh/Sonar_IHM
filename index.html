@@ -19,8 +19,61 @@
   </div>
   <canvas id="myChart"></canvas>
 </div>
-
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"
+  integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="front.js"></script>
+<script>
+  const socket = io('http://localhost:3000');
+  console.log(socket);
+    socket.on('connect', () => {
+      console.log('Connected');
+    }); 
+    socket.on('Sendpos', (dataPos) => {
+      console.log("data" + dataPos.pos );
+      console.log(dataPos );
+    });
+
+    const ctx = document.getElementById('myChart');
+    const data = [12, 15, 3, 5, 2, 3, 11, 9, 13];
+    const labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+    let mychart;
+
+    let type;
+
+
+    // websocket 
+
+
+
+
+    /*function CreateChart(data, labels, type) {
+      myChart.destroy();
+      mychart = new Chart(ctx, {
+        type: type,
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'distance',
+            data: data,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          // scales: {
+          //   y: {
+          //     beginAtZero: true
+          //   }
+          // }
+        }
+      });
+    }
+    CreateChart(data, labels, 'line')*/
+
+
+
+  
+
+</script>
 </body>
 </html>

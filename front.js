@@ -1,10 +1,23 @@
+
+
 const ctx = document.getElementById('myChart');
 const data = [12, 15, 3, 5, 2, 3 ,11 ,9 ,13  ];
 const labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
 let mychart ;
 
-let type ;
+let type;
+
+
+// websocket 
+socket.on('message', (data) => {
+  console.log(data);
+  document.querySelector('.data').innerText = data;
+});
+
+socket.on('Sendpos', (data) => {
+  console.log(data);
+});
 
 function CreateChart(data, labels, type) {
   myChart.destroy();
@@ -28,5 +41,7 @@ function CreateChart(data, labels, type) {
   });
 }
 CreateChart(data, labels, 'line')
+
+
 
 

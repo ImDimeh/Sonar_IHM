@@ -8,10 +8,16 @@ const httpServer = http.createServer(app);
 const path = require('path');
 let ip = require('ip');
 const buffers = require('buffer');
+const { Socket } = require('dgram');
 console.log(ip.address())
 let i = 0
 let color = [0, 0, 0]
-const port = 3000;
+const PORT = 3000;
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
+  }
+})
 
 /*const io = new Server(httpServer, {
     cors : {
@@ -20,9 +26,18 @@ const port = 3000;
 });*/
 
 // middelware
-app.use(express.json());
+app.use(express.json());  
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors())
+//consolelog type request and url middle ware
+app.use((req, res, next) => {
+  console.log(req.method, req.url)
+  next()
+})
+app.get('/', (req, res) => {
+  res.json('ip address: http://' + ip.address() + ':' + PORT);
+});
 
 
 app.get("/", (req, res) => {
@@ -33,15 +48,35 @@ app.get("/", (req, res) => {
 app.post('/pos', (req, res) => {
   const pos = req.body
   console.log("pos")
-  console.log(pos)
+  console.log(req.query )
+  io.emit("Sendpos", pos)
   // RECREER un chart
-    
-  //io.emit("Sendpos", pos)
-  res.send({ "msg": "ok post" })
+  
+  //io.em it("Sendpos", pos)
+  res.send({ "msg": pos })
+  
+});
+
+io.on('connection', (socket) => {
+  console.log('a user connected');
+  socket.broadcast.emit('user connected');
+  socket.on('disconnect', () => {
+    // console.log('user disconnected');
+    socket.broadcast.emit('user disconnected');
+  });
+
+
+  socket.on('message', (msg) => {
+    // console.log('message: ' + msg);
+    io.emit('message', msg);
+  });
+ 
 });
 
 
 
-app.listen(port, () => {
-  console.log(`On écoute le port n°${port}`)
-});
+
+
+httpServer.listen(PORT, () => {
+  console.log('Server ip : http://' + ip.address() + ":" + PORT);
+})
