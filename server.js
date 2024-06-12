@@ -11,7 +11,7 @@ const buffers = require('buffer');
 console.log(ip.address())
 let i = 0
 let color = [0, 0, 0]
-
+const port = 3000;
 
 /*const io = new Server(httpServer, {
     cors : {
@@ -35,7 +35,13 @@ app.post('/pos', (req, res) => {
   console.log("pos")
   console.log(pos)
   // RECREER un chart
-
+    
   //io.emit("Sendpos", pos)
   res.send({ "msg": "ok post" })
+});
+
+
+
+app.listen(port, () => {
+  console.log(`On écoute le port n°${port}`)
 });
