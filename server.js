@@ -48,7 +48,7 @@ app.get("/", (req, res) => {
 app.post('/pos', (req, res) => {
   const pos = req.body
   console.log("pos")
-  console.log(req.query )
+  console.log(pos.position )
   io.emit("Sendpos", pos)
   // RECREER un chart
   
