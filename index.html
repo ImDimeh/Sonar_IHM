@@ -1,54 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>web interface</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <h1> web interface</h1>
-<div class="Chart-container">
-  <div class="chart_types">
-    <button onclick="CreateChart(data, labels, 'bar')">Bars</button>
-    <button onclick="CreateChart(data, labels, 'line')">Line</button>
-    
-    <button onclick="CreateChart(data, labels, 'doughnut')">Doughnut</button>
-    <button onclick="CreateChart(data, labels, 'polarArea')">PolarArea</button>
-    <button onclick="CreateChart(data, labels, 'radar')">Radar</button>
+  <div>
+    <p class="Distance-Paragraphe">DISTANCE:</p>
+    <p></p>
+    <p class="Heure-Paragraphe">Heure</p>
+    <p></p>
   </div>
-  <canvas id="myChart"></canvas>
-</div>
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"
-  integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  const socket = io('http://localhost:3000');
-  console.log(socket);
-    socket.on('connect', () => {
-      console.log('Connected');
-    }); 
-    socket.on('Sendpos', (dataPos) => {
-      console.log("data" + dataPos.pos );
-      console.log(dataPos );
-    });
+  <div class="Chart-container">
+    <div class="chart_types">
+      <button onclick="CreateChart(data, labels, 'bar')">Bars</button>
+      <button onclick="CreateChart(data, labels, 'line')">Line</button>
 
+      <button onclick="CreateChart(data, labels, 'doughnut')">Doughnut</button>
+      <button onclick="CreateChart(data, labels, 'polarArea')">PolarArea</button>
+      <button onclick="CreateChart(data, labels, 'radar')">Radar</button>
+    </div>
+    <canvas id="myChart"></canvas>
+  </div>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"
+    integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
     const ctx = document.getElementById('myChart');
-    const data = [12, 15, 3, 5, 2, 3, 11, 9, 13];
-    const labels = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const listPos = [];
+    const labels = [];
 
     let mychart;
-
     let type;
 
+    mychart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'distance',
+          data: listPos,
+          borderWidth: 1
+        }]
+      },
+      options: {
+         scales: {
+           y: {
+            beginAtZero: true ,
+            min : 0,
+            max : 100
+           }
+         }
+      }
+    });
+   
+   
+    const socket = io('https://sonar-ihm.onrender.com');
 
-    // websocket 
+    //console.log(socket);
+    socket.on('connect', () => {
+      console.log('Connected');
+    });
+    socket.on('Sendpos', (dataPos) => {
+
+      var paragrapheP = document.querySelector('.Distance-Paragraphe');
+      var paragrapheHeure = document.querySelector('.Heure-Paragraphe');
+      listPos.push(dataPos)
+      
+      labels.push(new Date().toLocaleTimeString())
+      function addData(chart, data, label) {
+        chart.data.labels.push(label);
+        chart.data.datasets.forEach((dataset) => {
+          dataset.data.push(data);
+        });
+        chart.update();
+
+      }
+      console.log(dataPos);
+      paragrapheP.textContent = "Distance : " + dataPos.position; 
+      paragrapheHeure.textContent = "Heure : " + new Date().toLocaleTimeString();
+      console.log("Liste des positions : " + listPos);
+      console.log(labels);
+      addData(mychart, dataPos.position, new Date().toLocaleTimeString());
+      
+    });
 
 
 
 
-    /*function CreateChart(data, labels, type) {
+    function CreateChart(data, labels, type) {
       myChart.destroy();
+
       mychart = new Chart(ctx, {
         type: type,
         data: {
@@ -68,12 +116,13 @@
         }
       });
     }
-    CreateChart(data, labels, 'line')*/
-
-
-
   
 
-</script>
+
+
+
+
+  </script>
 </body>
+
 </html>

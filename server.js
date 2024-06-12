@@ -49,7 +49,7 @@ app.post('/pos', (req, res) => {
   const pos = req.body
   console.log("pos")
   console.log(pos.position )
-  io.emit("Sendpos", pos)
+  io.emit("Sendpos", pos.position)
   // RECREER un chart
   
   //io.em it("Sendpos", pos)
