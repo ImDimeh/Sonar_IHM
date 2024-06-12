@@ -35,7 +35,7 @@ app.post('/pos', (req, res) => {
   console.log("pos")
   console.log(pos)
   // RECREER un chart
-  
+    
   //io.emit("Sendpos", pos)
   res.send({ "msg": "ok post" })
 });
